@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      overflow: hidden;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.8;
+      background: linear-gradient(to right, #FF512F, #DD2476);
+      background-size: 400% 400%;
+      animation: gradientBackground 15s ease infinite;
+    }
+
+    @keyframes gradientBackground {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    #quiz {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .question {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .answers label {
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .answers input[type="radio"] {
+      margin-right: 5px;
+    }
+
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <h1>Quiz App</h1>
+  <div id="quiz"></div>
+  <button onclick="submitQuiz()">Submit</button>
+
+  <script>
+    const quizContainer = document.getElementById('quiz');
+    const submitButton = document.querySelector('button');
+
+    const questions = [
+      {
+        question: "What is the capital of France?",
+        answers: {
+          a: "Paris",
+          b: "Madrid",
+          c: "London"
+        },
+        correctAnswer: "a"
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        answers: {
+          a: "Mars",
+          b: "Venus",
+          c: "Jupiter"
+        },
+        correctAnswer: "a"
+      },
+      {
+        question: "What is the largest organ in the human body?",
+        answers: {
+          a: "Liver",
+          b: "Heart",
+          c: "Skin"
+        },
+        correctAnswer: "c"
+      }
+    ];
+
+    function buildQuiz() {
+      const output = [];
+
+      questions.forEach((currentQuestion, questionNumber) => {
+        const answers =
+
+ [];
+
+        for (letter in currentQuestion.answers) {
+          answers.push(
+            `<label>
+              <input type="radio" name="question${questionNumber}" value="${letter}">
+              ${letter}: ${currentQuestion.answers[letter]}
+            </label>`
+          );
+        }
+
+        output.push(
+          `<div class="question"> ${currentQuestion.question} </div>
+          <div class="answers"> ${answers.join('')} </div>`
+        );
+      });
+
+      quizContainer.innerHTML = output.join('');
+    }
+
+    function submitQuiz() {
+      const answerContainers = quizContainer.querySelectorAll('.answers');
+      let numCorrect = 0;
+
+      questions.forEach((currentQuestion, questionNumber) => {
+        const answerContainer = answerContainers[questionNumber];
+        const selector = `input[name=question${questionNumber}]:checked`;
+        const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+        if (userAnswer === currentQuestion.correctAnswer) {
+          numCorrect++;
+          answerContainers[questionNumber].style.color = 'green';
+        } else {
+          answerContainers[questionNumber].style.color = 'red';
+        }
+      });
+
+      // Display the result
+      quizContainer.innerHTML += `<div>You answered ${numCorrect} out of ${questions.length} questions correctly.</div>`;
+      submitButton.style.display = 'none';
+    }
+
+    buildQuiz();
+  </script>
+</body>
+</html>
